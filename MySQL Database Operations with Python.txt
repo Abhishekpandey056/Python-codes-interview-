@@ -1,0 +1,130 @@
+# Import the MySQL connector module
+import mysql.connector
+
+# Function to create a connection to the MySQL database
+def connect_to_database():
+    try:
+        # Establish a connection to the MySQL server
+        connection = mysql.connector.connect(
+            host="your_host",  # Replace with your MySQL server host
+            user="your_user",  # Replace with your MySQL username
+            password="your_password",  # Replace with your MySQL password
+            database="your_database"  # Replace with your MySQL database name
+        )
+        return connection
+    except mysql.connector.Error as err:
+        # Handle connection errors
+        print(f"Error: {err}")
+        return None
+
+# Function to create a table if not exists
+def create_table(connection):
+    # Create a cursor object to interact with the database
+    cursor = connection.cursor()
+
+    # Execute an SQL query to create the "students" table if it doesn't exist
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS students (
+            student_id INT AUTO_INCREMENT PRIMARY KEY,
+            first_name VARCHAR(255),
+            last_name VARCHAR(255),
+            age INT,
+            grade FLOAT
+        )
+    """)
+
+    # Commit the changes to the database
+    connection.commit()
+
+# Function to insert a new student record
+def insert_student(connection, first_name, last_name, age, grade):
+    # Create a cursor object
+    cursor = connection.cursor()
+
+    # Execute an SQL query to insert a new student record
+    cursor.execute("""
+        INSERT INTO students (first_name, last_name, age, grade)
+        VALUES (%s, %s, %s, %s)
+    """, (first_name, last_name, age, grade))
+
+    # Commit the changes to the database
+    connection.commit()
+
+# Function to update the grade of a student
+def update_grade(connection, first_name, new_grade):
+    # Create a cursor object
+    cursor = connection.cursor()
+
+    # Execute an SQL query to update the grade of a student
+    cursor.execute("""
+        UPDATE students
+        SET grade = %s
+        WHERE first_name = %s
+    """, (new_grade, first_name))
+
+    # Commit the changes to the database
+    connection.commit()
+
+# Function to delete a student
+def delete_student(connection, last_name):
+    # Create a cursor object
+    cursor = connection.cursor()
+
+    # Execute an SQL query to delete a student based on last name
+    cursor.execute("""
+        DELETE FROM students
+        WHERE last_name = %s
+    """, (last_name,))
+
+    # Commit the changes to the database
+    connection.commit()
+
+# Function to fetch and display all student records
+def fetch_and_display_students(connection):
+    # Create a cursor object
+    cursor = connection.cursor()
+
+    # Execute an SQL query to select all columns from the "students" table
+    cursor.execute("SELECT * FROM students")
+
+    # Fetch all the records
+    students = cursor.fetchall()
+
+    # Check if there are any records
+    if students:
+        print("Student Records:")
+        for student in students:
+            print(student)
+    else:
+        print("No student records found.")
+
+# Main function
+def main():
+    # Connect to the MySQL database
+    connection = connect_to_database()
+
+    # Check if the connection is successful
+    if connection:
+        # Create the "students" table if not exists
+        create_table(connection)
+
+        # Insert a new student record
+        insert_student(connection, "Alice", "Smith", 18, 95.5)
+
+        # Update the grade of the student with the first name "Alice"
+        update_grade(connection, "Alice", 97.0)
+
+        # Delete the student with the last name "Smith"
+        delete_student(connection, "Smith")
+
+        # Fetch and display all student records
+        fetch_and_display_students(connection)
+
+        # Close the database connection
+        connection.close()
+        print("Database connection closed.")
+
+# Check if the script is being run directly
+if __name__ == "__main__":
+    # Call the main function
+    main()

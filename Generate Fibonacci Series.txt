@@ -1,0 +1,40 @@
+# Function to generate the Fibonacci sequence up to n terms
+def generate_fibonacci(n):
+    # Initialize the sequence with the first two terms (0 and 1)
+    fibonacci_sequence = [0, 1]
+
+    # Loop to generate the sequence up to the desired number of terms
+    while len(fibonacci_sequence) < n:
+        # Calculate the next Fibonacci number by adding the last two numbers
+        next_number = fibonacci_sequence[-1] + fibonacci_sequence[-2]
+
+        # Append the next number to the sequence
+        fibonacci_sequence.append(next_number)
+
+    # Return the generated Fibonacci sequence up to n terms
+    return fibonacci_sequence[:n]
+
+# Main function
+def main():
+    try:
+        # Prompt the user to enter the number of terms for the Fibonacci sequence
+        n = int(input("Enter the number of terms for the Fibonacci sequence: "))
+
+        # Check if the input is a positive integer
+        if n <= 0:
+            print("Please enter a positive integer.")
+        else:
+            # Call the function to generate the Fibonacci sequence
+            result = generate_fibonacci(n)
+
+            # Display the generated Fibonacci sequence
+            print(f"Fibonacci Sequence up to {n} terms: {result}")
+
+    except ValueError:
+        # Handle the case where the user enters a non-integer value
+        print("Invalid input. Please enter a positive integer.")
+
+# Check if the script is being run directly
+if __name__ == "__main__":
+    # Call the main function
+    main()
